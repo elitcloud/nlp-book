@@ -2,7 +2,7 @@
 
 * [Practical Approaches to Natural Language Processing](README.md)
 * [NLP Development](nlp-development/README.md)
-  * [NLP Component](nlp-development/development.md)
+  * [NLP Component](nlp-development/nlp-component.md)
 * [NLP Tasks](nlp-tasks/README.md)
   * [Tokenization](nlp-tasks/tokenization.md)
   * [Lemmatization](nlp-tasks/lemmatization.md)
