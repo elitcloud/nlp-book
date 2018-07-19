@@ -1,18 +1,20 @@
-# NLP Component
+# NLP Components
 
-An [NLP component](nlp-component.md#nlp-component) can be viewed as a function that 1\) takes input text, 2\) makes predictions on the input text for an NLP task \(e.g., part-of-speech tagging, dependency parsing\), and 3\) generates output inferred by those predictions.  Generally, an NLP component needs to define a [decoding strategy](nlp-component.md#decoding-strategies) that processes through the input text and an [inference model](nlp-component.md#inference-models) that makes predictions for each state during the decoding.
+## NLP Component
 
-## Terminologies
+An [NLP component](nlp-component.md#nlp-component) can be viewed as a function that 1\) takes input text, 2\) makes predictions on the input text for an NLP task \(e.g., part-of-speech tagging, dependency parsing\), and 3\) generates output inferred by those predictions. Generally, an NLP component needs to define a [decoding strategy](nlp-component.md#decoding-strategies) that processes through the input text and an [inference model](nlp-component.md#inference-models) that makes predictions for each state during the decoding.
+
+### Terminologies
 
 * **Token**: a basic linguistic unit that has a full semantic of its own.  Typical words \(e.g., girl, pretty\), abbreviations \(e.g., Mr., 's\), as well as symbols \(e.g., $, :-\)\) are all considered individual tokens.  See [Tokenization](../nlp-tasks/tokenization.md) for more details.
 * **Sentence**: a list of tokens.
 * **Document**: a list of sentences.
 
-## Decoding Strategies
+### Decoding Strategies
 
-Given a document, a decoding strategy guides the component to visit every state so it can make predictions for the task.  For example, a part-of-speech tagger visits every token in a document and predicts the part-of-speech tag of that token.  In this case, the decoding strategy determines which token to be visited first, how to move onto the next token after making a prediction, and when to stop.  At any step, the component needs to create a state that contains information such as the currently visited token, its surrounding tokens, previously predicted part-of-speech tags, etc. to extract features to make the prediction.
+Given a document, a decoding strategy guides the component to visit every state so it can make predictions for the task. For example, a part-of-speech tagger visits every token in a document and predicts the part-of-speech tag of that token. In this case, the decoding strategy determines which token to be visited first, how to move onto the next token after making a prediction, and when to stop. At any step, the component needs to create a state that contains information such as the currently visited token, its surrounding tokens, previously predicted part-of-speech tags, etc. to extract features to make the prediction.
 
-### NLPState
+#### NLPState
 
 The abstract class `NLPState` provides a template to define a decoding strategy.
 
@@ -68,7 +70,7 @@ class NLPState(abc.ABC):
 * The x method returns the feature vector \(or matrix\) for the current state, that is a numpy array.
 * The y method returns the ID of the gold-standard label for the current state.
 
-### ForwardState
+#### ForwardState
 
 Many NLP tasks such as part-of-speech tagging or named entity recognition use a simple decoding strategy known as the one-pass, left-to-right tagging. For these common tasks, ELIT provides another abstract class, ForwardState, that visits and makes a prediction for every word in a document from the top-left to the bottom-right.
 
@@ -82,7 +84,7 @@ Many NLP tasks such as part-of-speech tagging or named entity recognition use a 
 * The has\_next method returns True if the current sentence is valid; otherwise, False.
 * The labels method returns the predicted labels for all words in the document.
 
-## Inference Models
+### Inference Models
 
-## NLP Component
+### NLP Component
 
