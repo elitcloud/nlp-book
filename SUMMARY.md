@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Practical Approaches to Natural Language Processing](README.md)
+* [Practical Approaches to Natural Language Processing using ELIT](README.md)
 * [NLP Components](nlp-components/README.md)
   * [Part-of-Speech Tagger](nlp-components/part-of-speech-tagger.md)
 * [NLP Tasks](nlp-tasks/README.md)
