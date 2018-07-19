@@ -14,6 +14,7 @@
   * [Question Answering](nlp-tasks/question-answering.md)
 * [Utilities](utilities/README.md)
   * [Lexicons](utilities/lexicons.md)
+  * [Structure](utilities/structure.md)
 * [Appendix](appendix/README.md)
   * [Terminologies](appendix/terminologies.md)
 
