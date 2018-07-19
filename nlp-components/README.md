@@ -6,6 +6,10 @@ description: Development of NLP components in ELIT.
 
 An [NLP component](./#nlp-component) can be viewed as a function that 1\) takes input text, 2\) makes predictions on the input text for an NLP task \(e.g., [part-of-speech tagging](../nlp-tasks/part-of-speech-tagging.md), [dependency parsing](../nlp-tasks/dependency-parsing.md)\), and 3\) generates output inferred by those predictions.  Generally, an NLP component needs to define a [decoding strategy](./#decoding-strategies) that processes through the input text and an [inference model](./#inference-models) that makes predictions for each state during the decoding.
 
+{% hint style="info" %}
+See [component.py](https://github.com/elitcloud/elit/blob/master/elit/component.py) for the implementations of the classes and methods described in this section.
+{% endhint %}
+
 ## Terminologies
 
 * **Token**: a basic linguistic unit that has a meaning of its own.  Typical words \(e.g., girl, pretty\), abbreviations \(e.g., Mr., 's\), as well as symbols \(e.g., $, :-\)\) are considered individual tokens.  See [tokenization](../nlp-tasks/tokenization.md) for more details.
@@ -18,7 +22,7 @@ Given a document, a decoding strategy guides the component to visit every state 
 
 ### NLPState
 
-[`NLPState`](https://github.com/elitcloud/elit/blob/master/elit/component.py) provides a generic template to define a decoding strategy.
+[`NLPState`](https://github.com/elitcloud/elit/blob/master/elit/component.py) provides a generic template to define a decoding strategy.  We will see an example of how this class is adapted to define the [one-pass left-to-right decoding strategy](./#oplrstate) in the following section.
 
 ```python
 class NLPState(abc.ABC):
@@ -72,12 +76,12 @@ class NLPState(abc.ABC):
 * `x` returns the feature vector \(or matrix\) extracted from the current state.
 * `y` returns the class ID of the gold-standard label for the current state \(training only\).
 
-### ForwardState
+### OPLRState
 
-ForwardState defines the one-pass, left-to-right decoding strategy.  Many NLP tasks such as part-of-speech tagging or named entity recognition use a simple decoding strategy known as the one-pass, left-to-right tagging. For these common tasks, ELIT provides another abstract class, ForwardState, that visits and makes a prediction for every word in a document from the top-left to the bottom-right.
+[`OPLRState`](https://github.com/elitcloud/elit/blob/master/elit/component.py) defines the one-pass left-to-right decoding strategy \(OPLR\), that is one of the most commonly used decoding strategies in NLP.  Given a document, it visits the first token in the first document, moves onto the next token in the same document if exists; otherwise, the first token in the next document, and so on.  This strategy is adapted by popular tasks such as [part-of-speech tagging](../nlp-tasks/part-of-speech-tagging.md) or [named entity recognition](../nlp-tasks/named-entity-recognition.md).
 
 ```python
-class ForwardState(NLPState):
+class OPLRState(NLPState):
     def __init__(self, 
                  document: elit.util.Document,
                  label_map: elit.lexicon.LabelMap,
@@ -96,8 +100,17 @@ class ForwardState(NLPState):
         self.reset()
 ```
 
-* document
-* * * * In addition to the input document, ForwardState takes two more parameters, label\_map and zero\_output . The label\_map gives the mapping between class labels and their unique IDs and zero\_output is numpy.zeros\(num\_class\), where num\_class is the total number of classes, and used to create a placeholder for self.output \(we will see the use case of this in the part-of-speech tagging section\). It also initializes two pointers, sen\_id and tok\_id, that indicate which token in which sentence to be processed.
+* `document` is an input document.
+* `label_map` collects class labels during training and generates unique IDs for the labels.
+* `zero_output` is a vector whose dimension is the same as the number of class labels, where all values are `0`.  This is used for zero-padding 
+* key
+* key\_out
+
+
+
+
+
+* * In addition to the input document, ForwardState takes two more parameters, label\_map and zero\_output . The label\_map gives the mapping between class labels and their unique IDs and zero\_output is numpy.zeros\(num\_class\), where num\_class is the total number of classes, and used to create a placeholder for self.output \(we will see the use case of this in the part-of-speech tagging section\). It also initializes two pointers, sen\_id and tok\_id, that indicate which token in which sentence to be processed.
 * The reset method sets the pointers to 0 , implying that it starts with the first token in the first sentence, and reinitializes the output to zero vectors.
 * The process method applies the prediction result, output , to the current state, and moves onto the next token if exists; otherwise, to the first token in the following sentence.
 * The has\_next method returns True if the current sentence is valid; otherwise, False.

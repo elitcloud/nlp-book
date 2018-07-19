@@ -12,6 +12,8 @@
   * [Coreference Resolution](nlp-tasks/coreference-resolution.md)
   * [Sentiment Analysis](nlp-tasks/sentiment-analysis.md)
   * [Question Answering](nlp-tasks/question-answering.md)
+* [Utilities](utilities/README.md)
+  * [Lexicons](utilities/lexicons.md)
 * [Appendix](appendix/README.md)
   * [Terminologies](appendix/terminologies.md)
 
