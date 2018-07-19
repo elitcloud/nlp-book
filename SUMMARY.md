@@ -3,6 +3,7 @@
 * [Practical Approaches to Natural Language Processing](README.md)
 * [NLP Development](nlp-development/README.md)
   * [NLP Component](nlp-development/nlp-component.md)
+  * [Part-of-Speech Tagger](nlp-development/part-of-speech-tagger.md)
 * [NLP Tasks](nlp-tasks/README.md)
   * [Tokenization](nlp-tasks/tokenization.md)
   * [Lemmatization](nlp-tasks/lemmatization.md)

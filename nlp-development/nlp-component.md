@@ -1,6 +1,6 @@
 # NLP Component
 
-An [NLP component](development.md#nlp-component) can be viewed as a function that 1\) takes input text, 2\) makes predictions on the input text for an NLP task \(e.g., part-of-speech tagging, dependency parsing\), and 3\) generates output inferred by those predictions.  Generally, an NLP component needs to define a [decoding strategy](development.md#decoding-strategies) that processes through the input text and an [inference model](development.md#inference-models) that makes predictions for each state during the decoding.
+An [NLP component](nlp-component.md#nlp-component) can be viewed as a function that 1\) takes input text, 2\) makes predictions on the input text for an NLP task \(e.g., part-of-speech tagging, dependency parsing\), and 3\) generates output inferred by those predictions.  Generally, an NLP component needs to define a [decoding strategy](nlp-component.md#decoding-strategies) that processes through the input text and an [inference model](nlp-component.md#inference-models) that makes predictions for each state during the decoding.
 
 ## Terminologies
 
@@ -10,7 +10,7 @@ An [NLP component](development.md#nlp-component) can be viewed as a function tha
 
 ## Decoding Strategies
 
-Given a document that contains a list of sentences where each sentence comprises a list of tokens, a decoding strategy guides the component to visit every state and make predictions.  For example, a part-of-speech tagger visits every token in a document and predicts the part-of-speech tag of that token.  In this case, the decoding strategy determines which token to be visited first, how to move onto the next token, and when to stop.  At any step, the component needs to create a state providing necessary information for feature extraction such as the currently visited token, surrounding tokens, previously predicted part-of-speech tags, etc.
+Given a document, a decoding strategy guides the component to visit every state so it can make predictions for the task.  For example, a part-of-speech tagger visits every token in a document and predicts the part-of-speech tag of that token.  In this case, the decoding strategy determines which token to be visited first, how to move onto the next token after making a prediction, and when to stop.  At any step, the component needs to create a state that contains information such as the currently visited token, its surrounding tokens, previously predicted part-of-speech tags, etc. to extract features to make the prediction.
 
 ### NLPState
 
