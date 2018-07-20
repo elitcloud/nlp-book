@@ -1,5 +1,5 @@
 ---
-description: Development of NLP components in ELIT.
+description: How to develop NLP components in ELIT.
 ---
 
 # NLP Components
@@ -72,9 +72,9 @@ class NLPState(abc.ABC):
 * `has_next()` returns `True` if there is a next state to be processed; otherwise, `False`.
 * `finalize()` saves all predicted outputs, `self.outputs`, and inferred labels, `self.labels`, to the input document, `self.document`.
 * `eval()` updates the evaluation metric by comparing the gold-standard labels and the inferred labels, `self.labels`.
-* `labels()` returns the labels for the input document inferred from `self.outputs`.
-* `x()` returns the feature vector \(or matrix\) extracted from the current state.
-* `y()` returns the class ID of the gold-standard label for the current state \(training only\).
+* `labels` returns the labels for the input document inferred from `self.outputs`.
+* `x` returns the feature vector \(or matrix\) extracted from the current state.
+* `y` returns the class ID of the gold-standard label for the current state \(training only\).
 
 ### OPLRState
 
@@ -105,10 +105,10 @@ class OPLRState(NLPState):
 * `zero_output` is a vector whose dimension is the number of class labels, where all values are `0`.  This is used to initialize `self.outputs`.
 * `key` is the key to each sentence in the input document where the inferred labels are  to be saved. 
 * `key_out` is the key to each sentence in the input document where the predicted outputs are to be saved.
-* `self.sen_id` and `self.tok_id` are initialized to `0` \(L15-16\), indicating that the current state is set to the first token of the first sentence in the input document.
+* The sentence and token pointers, `self.sen_id` and `self.tok_id`, are initialized to `0` \(L15-16\), indicating that the current state is set to the first token of the first sentence in the input document.
 *  `reset()` is called to set all member instances to the initial state \(L17\).
 
-The abstract methods [`reset()`](./#reset), [`process()`](./#process), [`has_next()`](./#has_next), [`finalize()`](./#finalize), [`labels()`](./#labels), and [`y()`](./#y) from `NLPState` are defined in `OPLRState` whereas `eval()` and `x()` are not, which are rather task-specific.  Thus, `OPLRState` is still an abstract class that gets inherited by components such as a [part-of-speech tagger](part-of-speech-tagger.md) or a [named entity recognizer](named-entity-recognizer.md). 
+The abstract methods [`reset()`](./#reset), [`process()`](./#process), [`has_next()`](./#has_next), [`finalize()`](./#finalize), [`labels`](./#labels), and [`y`](./#y) from `NLPState` are defined in `OPLRState` whereas `eval()` and `x` are not, which are rather task-specific.  Thus, `OPLRState` is still an abstract class that gets inherited by components such as a [part-of-speech tagger](part-of-speech-tagger.md) or a [named entity recognizer](named-entity-recognizer.md). 
 
 #### reset\(\)
 
@@ -124,12 +124,12 @@ def reset(self):
     self.tok_id = 0
 ```
 
-When `reset()` is called for the first time, it creates a 3D matrix $$M \in \mathcal{R}^{x \times y \times z}$$, where _`x`_ is the number of class labels, _`y`_ is the number of tokens in each sentence, and `z` is the number of sentences \(L2-3\).  For later uses, it resets each output to the 2D zero matrix \(L4-6\).  Notice that the memory usage of `self.outputs` is low since it does not actually create zero vectors but just points to `zero_output`.  It is important to ensure an efficient memory allocation because thousands and millions of states may be created to process big data.
+When `reset()` is called for the first time, it creates a 3D matrix $$\in \mathcal{R}^{x \times y \times z}$$, where $$x$$ is the number of tokens in each sentence, $$y$$ is the number of class labels, and $$z$$ is the number of sentences \(L2-3\).  For later uses, it resets each output to the 2D matrix \(L4-6\).  Notice that the memory usage of `self.outputs` is low since it does not actually create vectors but rather points to `zero_output`.  It is important to ensure an efficient memory allocation because millions of states may be created to process big data.
 
 #### process\(\)
 
 ```python
-def process(self, output):
+def process(self, output: numpy.array):
     # apply the output to the current state
     self.outputs[self.sen_id][self.tok_id] = output
 
@@ -140,34 +140,34 @@ def process(self, output):
         self.tok_id = 0
 ```
 
+Given the predicted output, `process()` saves the output to `self.outputs` \(L3\) and moves the token pointer, `self.tok_id`, to the next state \(L6\).  If no more token is left in the current sentence \(L7\), it moves the sentence pointer, `self.sen_id`, to the next state \(L8\) and initializes the token pointer \(L9\).
+
 #### has\_next\(\)
 
 ```python
-def has_next(self):
+def has_next(self) -> bool:
     return 0 <= self.sen_id < len(self.document)
 ```
+
+Notice that the sentence pointer, `self.sen_id`, would become out-of-bound after calling `process()` if no more state is left.  `has_next()` returns `True` if the sentence pointer is in-bound; otherwise, `False`.
 
 #### finalize\(\)
 
 ```python
 def finalize(self):
-    """
-    Finalizes the predicted labels and the prediction scores for all tokens in the input document.
-    """
     for i, labels in enumerate(self.labels):
         d = self.document.get_sentence(i)
         d[self.key] = labels
         d[self.key_out] = self.outputs[i]
 ```
 
+Once decoding is done, `finalize()` is called to save the inferred labels \(L4\), `self.labels`, and the predicted outputs \(L5\), `self.outputs`, to each sentence in the input document.
+
 #### labels\(\)
 
 ```python
 @property
-def labels(self):
-    """
-    :rtype: list of (list of str)
-    """
+def labels(self) -> List[List[str]]:
     def aux(scores):
         if size < len(scores): scores = scores[:size]
         return self.label_map.get(np.argmax(scores))
@@ -176,20 +176,26 @@ def labels(self):
     return [[aux(o) for o in output] for output in self.outputs]
 ```
 
-#### 
+For each predicted output, `labels()` infers the class label \(e.g., part-of-speech tag\) of the corresponding token by taking the `argmax` of the output \(L5\).  The output vector `scores` gets trimmed to the number of labels collected by `self.label_map` if it is greater \(L4\).  Finally, it returns a 2D array $$\in \mathcal{R}^{x \times y}$$, where $$x$$ is the number of sentences and $$y$$ is the number of tokens in each sentence such that $$(x, y)$$ is the class label of the $$y$$'th token in the $$x$$'th sentence.
 
 #### y\(\)
 
 ```python
 @property
-def y(self):
+def y(self) -> int:
     label = self.document.get_sentence(self.sen_id)[self.key][self.tok_id]
     return self.label_map.add(label)
 ```
 
+During training, `y()` retrieves the gold-standard label of the currently visited token \(L3\), and adds the label to `self.label_map` that returns its unique ID \(L4\).
 
+{% hint style="info" %}
+See [`POSState`](part-of-speech-tagger.md#posstate) for the implementation of the abstract methods `eval()` and `x`.
+{% endhint %}
 
 ## Inference Model
+
+The feature vector `self.x` in [`NLPState`](./#nlpstate) is fed as input to an inference model using machine learning algorithms.  ELIT uses MXNet Gluon.
 
 ### FFNNModel
 
