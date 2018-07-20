@@ -3,6 +3,7 @@
 * [Practical Approaches to Natural Language Processing using ELIT](README.md)
 * [NLP Components](nlp-components/README.md)
   * [Part-of-Speech Tagger](nlp-components/part-of-speech-tagger.md)
+  * [Named Entity Recognizer](nlp-components/named-entity-recognizer.md)
 * [NLP Tasks](nlp-tasks/README.md)
   * [Tokenization](nlp-tasks/tokenization.md)
   * [Lemmatization](nlp-tasks/lemmatization.md)
