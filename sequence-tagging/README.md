@@ -9,9 +9,7 @@ This chapter gives a comprehensive tutorial for the development of NLP component
 In general, an NLP component defines a [decoding strategy](decoding-strategy.md) that guides it to process through the input text and an [inference model](inference-model.md) that makes predictions for each state during the process.  The following sections first explain how the APIs work in details then show how to implement a part-of-speech tagger and a named entity recognizer with the APIs, that are simple yet show state-of-the-art performance.
 
 {% hint style="info" %}
-* APIs: [component.py](https://github.com/elitcloud/elit/blob/master/elit/component.py).
-* Part-of-Speech Tagger: [pos.py](https://github.com/elitcloud/elit/blob/master/elit/pos.py).
-* Named Entity Recognizer: [ner.py](https://github.com/elitcloud/elit/blob/master/elit/pos.py).
+See the actual implementations of the [component APIs](https://github.com/elitcloud/elit/blob/master/elit/component.py), the [part-of-speech tagger](https://github.com/elitcloud/elit/blob/master/elit/pos.py), and the [named entity recognizer](https://github.com/elitcloud/elit/blob/master/elit/pos.py) described in this chapter.
 {% endhint %}
 
 ## Terminologies
