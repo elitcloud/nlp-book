@@ -1,10 +1,10 @@
 # Decoding Strategy
 
-Given a document, a decoding strategy guides the component to visit every state so it can make predictions for the task.  For example, a [part-of-speech tagger]() visits every token in a document and predicts the part-of-speech tag of that token.  In this case, the decoding strategy determines which token to be visited first, how to move onto the next token after making the prediction, and when to stop.  At any step, the component needs to create a state that contains information such as the currently visited token, its surrounding tokens, and previously predicted part-of-speech tags to extract features for the prediction.
+Given a document, a decoding strategy guides the component to visit every state that is necessary to make predictions for the task.  For example, a [part-of-speech tagger](../theory-and-method/part-of-speech-tagging.md) visits every token in a document and predicts the part-of-speech tag of that token.  In this case, the decoding strategy determines which token to be visited first, how to move onto the next token after making the prediction, and when to stop.  At any step, the component needs to create a state that contains information such as the currently visited token, its surrounding tokens, and previously predicted part-of-speech tags to extract features for the prediction.
 
 ## NLPState
 
-`NLPState` provides a generic template to define a decoding strategy.  We will see an example of how this class is inherited to define the [one-pass left-to-right decoding strategy]() in the following section.
+`NLPState` provides a generic template to define a decoding strategy.  We will see an example of how this abstract class is inherited to define the [one-pass left-to-right decoding strategy](decoding-strategy.md#oplrstate) in the following section.
 
 ```python
 class NLPState(abc.ABC):
@@ -51,16 +51,16 @@ class NLPState(abc.ABC):
 * `__init__()` takes an input document and sets the outputs to `None`.
 * `reset()` resets to the initial state.
 * `process()` applies predicted output to the current state, and moves onto the next state.
-* `has_next()` returns `True` if there is a next state to be processed; otherwise, `False`.
-* `finalize()` saves all predicted outputs, `self.outputs`, and inferred labels, `self.labels`, to the input document, `self.document`.
-* `eval()` updates the evaluation metric by comparing the gold-standard labels and the inferred labels, `self.labels`.
-* `labels` returns the labels for the input document inferred from `self.outputs`.
+* `has_next()` returns `True` if there exists a next state to be processed; otherwise, `False`.
+* `finalize()` saves all predicted outputs \(`self.outputs`\) and inferred labels \(`self.labels`\) to the input document \(`self.document`\).
+* `eval()` updates the evaluation metric by comparing the gold-standard labels \(if available\) and the inferred labels \(`self.labels`\).
+* `labels` returns the labels for the input document inferred by `self.outputs`.
 * `x` returns the feature vector \(or matrix\) extracted from the current state.
 * `y` returns the class ID of the gold-standard label for the current state \(training only\).
 
 ## OPLRState
 
-`OPLRState` defines the one-pass left-to-right decoding strategy \(OPLR\), one of the most commonly used decoding strategies in NLP.  Given a document, it visits the first token in the first document, moves onto the next token in the same document if exists; otherwise, the first token in the next document, and so on.  This strategy is adapted by popular tasks such as [part-of-speech tagging](../nlp-tasks/part-of-speech-tagging.md) or [named entity recognition](../nlp-tasks/named-entity-recognition.md).
+`OPLRState` defines the one-pass left-to-right decoding strategy \(OPLR\), one of the most commonly used decoding strategies in NLP.  Given a document, it visits the first token in the first document, moves onto the next token in the same document if available; otherwise, the first token in the next document, until it hits the last token in the last document.  This class is inherited by [`POSState`](decoding-strategy.md#posstate) and [`NERState`](decoding-strategy.md#nerstate) that are used for two sequence tagging tasks, [part-of-speech tagging](../theory-and-method/part-of-speech-tagging.md) and [named entity recognition](../theory-and-method/named-entity-recognition.md), respectively.
 
 ```python
 class OPLRState(NLPState):
@@ -83,7 +83,7 @@ class OPLRState(NLPState):
 ```
 
 * `document` is an input document.
-* [`label_map`](../utilities/lexicons.md#labelmap) collects class labels during training and maps them to unique IDs.
+* [`label_map`]() collects class labels during training and maps them to unique IDs.
 * `zero_output` is a vector whose dimension is the number of class labels, where all values are `0`.  This is used to initialize `self.outputs`.
 * `key` is the key to each sentence in the input document where the inferred labels are  to be saved. 
 * `key_out` is the key to each sentence in the input document where the predicted outputs are to be saved.
