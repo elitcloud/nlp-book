@@ -1,5 +1,5 @@
 ---
-description: Work in progress
+description: 'https://github.com/facebookresearch/fastText'
 ---
 
 # FastText
@@ -7,7 +7,6 @@ description: Work in progress
 ## References
 
 * [Enriching Word Vectors with Subword Information](https://arxiv.org/abs/1607.04606)
-* [Project page](https://github.com/facebookresearch/fastText).
 
 
 

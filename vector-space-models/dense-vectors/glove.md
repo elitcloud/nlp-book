@@ -1,5 +1,5 @@
 ---
-description: Work in progress
+description: 'https://nlp.stanford.edu/projects/glove/'
 ---
 
 # GloVe
@@ -7,7 +7,6 @@ description: Work in progress
 ## References
 
 * [GloVe: Global Vectors for Word Representation](https://www.aclweb.org/anthology/D14-1162)
-* [Project page](https://nlp.stanford.edu/projects/glove/).
 
 
 

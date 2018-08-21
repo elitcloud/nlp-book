@@ -4,7 +4,7 @@
 * [Introduction](introduction.md)
 * [Vector Space Models](vector-space-models/README.md)
   * [Sparse Vectors](vector-space-models/sparse-vectors/README.md)
-    * [Bag-of-Words](vector-space-models/sparse-vectors/bag-of-words.md)
+    * [Bag-of-Word Model](vector-space-models/sparse-vectors/bag-of-word-model.md)
     * [One-hot Encoding](vector-space-models/sparse-vectors/one-hot-encoding.md)
     * [Feature Hashing](vector-space-models/sparse-vectors/feature-hashing.md)
   * [Dense Vectors](vector-space-models/dense-vectors/README.md)
