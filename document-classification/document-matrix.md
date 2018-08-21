@@ -8,7 +8,7 @@ A document can be represented as a matrix $$D \in \mathcal{R}^{n \times d}$$ whe
 
 ![](../.gitbook/assets/document-matrix%20%282%29.png)
 
-Word embeddings can be retrieved by a [vector space model](../vector-space-model/).  A document can be a sentence, a tweet, a movie review, or an article in Wikipedia.
+Word embeddings can be retrieved by a [vector space model]().  A document can be a sentence, a tweet, a movie review, or an article in Wikipedia.
 
 
 
